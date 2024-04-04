@@ -32,13 +32,13 @@ export default {
     };
   },
   methods: {
-    getImageUrl() {
+    getImageUrl(teacher) {
       // Restituisci direttamente il percorso dell'immagine dell'insegnante
-      return `http://localhost:8000/storage/${store.List.image_url}`;
+      return `http://localhost:8000/storage/${teacher.image_url}`;
     },
+
     getCVUrl() {
-      console.log(store.List.cv_url);
-      return `http://localhost:8000/storage/${store.List.cv_url}`;
+      return "http://localhost:8000/storage/" + store.List.cv_url;
     },
 
     getReviews() {
@@ -121,7 +121,11 @@ export default {
           <div class="card-body">
             <div class="text-center">
               <div class="img_container">
-                <img class="w-100 h-100" :src="getImageUrl()" alt="" />
+                <img
+                  class="w-100 h-100"
+                  :src="getImageUrl(store.List)"
+                  alt=""
+                />
               </div>
               <div>
                 <div
@@ -253,8 +257,9 @@ export default {
                 :class="store.List.cv_url !== '' ? 'd-block' : 'd-none'"
                 :href="getCVUrl()"
                 target="_blank"
-              ></a
-              >VEDI CV
+              >
+                VEDI CV
+              </a>
             </button>
           </div>
         </div>

@@ -1,88 +1,108 @@
-<template>
-  <div class="your_class">
-    <div class="slick-slider" style="display: flex; flex-wrap: wrap">
-      <div
-        class="slick-slide"
-        v-for="review in store.recensioni"
-        :key="review.id"
-        style="flex: 0 0 calc(50% - 15px); margin-right: 15px"
-      >
-        <div class="card" style="min-height: 400px">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title mb-0">{{ review.title }}</h5>
-            <p class="card-text">{{ review.description }}</p>
-            <p class="card-text">{{ review.date_of_review }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
 <script>
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import $ from "jquery";
-
-import "slick-carousel";
 import { store } from "../store";
 
 export default {
   data() {
     return {
       store,
+      activePage: 0, // Indice della pagina attiva
+      itemsPerPage: 1, // Numero di elementi da visualizzare per pagina
+      timer: null, // Timer per lo scorrimento automatico
     };
   },
-  mounted() {
-    setTimeout(() => {
-      $(".your_class .slick-slider").slick({
-        infinite: true,
-        slidesToShow: 2,
-        slidesToScroll: 1,
-      });
-    }, 1500);
-    setTimeout(() => {
-      this.store.recensioni = JSON.parse(localStorage.getItem("recensioni"));
-    }, 1000);
+  computed: {
+    paginatedReviews() {
+      const startIndex = this.activePage * this.itemsPerPage;
+
+      return store.recensioni.slice(startIndex, startIndex + this.itemsPerPage);
+    },
   },
-  // Distruggi Slick Carousel al momento dello smontaggio del componente
-  beforeUnmount() {
-    $(".your_class .slick-slider").slick("unslick");
+  methods: {
+    changeNextPage() {
+      this.activePage =
+        (this.activePage + 1) %
+        Math.ceil(this.store.recensioni.length / this.itemsPerPage);
+    },
+
+    changePrevPage() {
+      this.activePage =
+        (this.activePage -
+          1 +
+          Math.ceil(this.store.recensioni.length / this.itemsPerPage)) %
+        Math.ceil(this.store.recensioni.length / this.itemsPerPage);
+    },
+
+    // Funzione per intervallo
+    intervalImg() {
+      this.timer = setInterval(this.changeNextPage, 4000);
+    },
+
+    // Funzione per fermare l'intervallo quando il mouse passa sopra
+    stopAutoPlay() {
+      clearInterval(this.timer);
+      this.timer = null;
+    },
+  },
+  mounted() {
+    this.intervalImg();
+  },
+  beforeDestroy() {
+    clearInterval(this.timer); // Cancella l'intervallo per evitare perdite di memoria
   },
 };
 </script>
 
-<style lang="scss">
-.your_class {
-  .slick-slider {
-    // display: flex; // Rimuovi Flexbox qui
-    // flex-wrap: nowrap; // Rimuovi Flexbox qui
-    margin: 0 auto; // Centra il carosello
-    max-width: 1000px;
+<template>
+  <div class="carosello">
+    <div class="container text-center">
+      <div class="slider-wrapper" tabindex="0" id="app">
+        <!-- Ciclo for sulla pagina attiva -->
+        <div
+          v-for="review in paginatedReviews"
+          :key="review.id"
+          @mouseover="stopAutoPlay"
+          @mouseout="intervalImg"
+        >
+          <!-- L'immagine si bloccherà quando il mouse passa sopra -->
+
+          <h5 class="card-title mb-0">{{ review.title }}</h5>
+          <p class="card-text">{{ review.description }}</p>
+          <p class="card-text">{{ review.date_of_review }}</p>
+        </div>
+      </div>
+      <div class="arrows">
+        <i @click="changePrevPage" class="fa-solid fa-arrow-left"></i>
+        <i @click="changeNextPage" class="fa-solid fa-arrow-right"></i>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+// SCSS per la sezione del carousel
+@use "../styles/partials/variables" as *;
+.carosello {
+  .slider-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    background-size: cover;
+    padding: 50px 0;
+    img {
+      max-width: 150px;
+      height: auto;
+    }
+    h1 {
+      font-size: 50px;
+    }
+    p {
+      padding-top: 30px;
+      color: #7799ad;
+      font-size: 20px;
+    }
   }
-
-  .slick-slide {
-    // Flexbox non è più necessario qui
-    // flex: 0 0 auto;
-    // margin-right: 15px;
-    min-height: 400px; // Altezza fissa delle card
+  .arrows {
+    display: flex;
+    justify-content: space-evenly;
   }
-}
-
-.slick-prev::before,
-.slick-next::before {
-  color: black;
-}
-
-.slick-prev,
-.slick-next {
-  z-index: 1;
-}
-
-.slick-prev {
-  left: -40px;
-}
-
-.slick-next {
-  right: -40px;
 }
 </style>
