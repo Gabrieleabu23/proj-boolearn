@@ -28,6 +28,7 @@ export default {
     },
 
     population() {
+      console.log(store.materie);
       const dataToSend = {
         subject: store.Subject,
         rating: store.Rating,
@@ -175,51 +176,77 @@ export default {
     this.store.Subject = localStorage.getItem("materiaID");
     this.population();
   },
-  watch: {
-    currentPage(newValue, oldValue) {
-      this.population();
-    },
-  },
 };
 </script>
 
 <template>
   <div class="container">
-    <div class="Gen_result d-flex flex-column align-items-center d-md-block pt-5">
-      <span class="d-block filt_text w-80 p-2"><b>MATERIA SELEZIONATA: </b>{{ store.Subject }}</span>
-      <br>
-      <span style="margin-top: 20px" class="d-block filt_text w-80 p-2"><b>RISULTATI TROVATI: </b>{{ totalTeachers
-        }}</span>
+    <div
+      class="Gen_result d-flex flex-column align-items-center d-md-block pt-5"
+    >
+      <span class="d-block filt_text w-80 p-2"
+        ><b>MATERIA SELEZIONATA: </b>{{ store.Subject }}</span
+      >
+      <br />
+      <span style="margin-top: 20px" class="d-block filt_text w-80 p-2"
+        ><b>RISULTATI TROVATI: </b>{{ totalTeachers }}</span
+      >
     </div>
 
     <div class="mt-5">
       <form class="text-center text-md-start">
         <div class="row row-cols-lg-3 mt-2 mt-md-5 mb-5 justify-content-center">
-          <div class="col-12 col-md-4 d-flex flex-column d-md-block align-items-center mt-3 mt-md-0">
+          <div
+            class="col-12 col-md-4 d-flex flex-column d-md-block align-items-center mt-3 mt-md-0"
+          >
             <span class="md-font">MATERIE DISPONIBILI</span>
-            <select v-model="store.Subject" class="form-select w-75" id="selected-Subject">
+            <select
+              v-model="store.Subject"
+              class="form-select w-75"
+              id="selected-Subject"
+            >
               <option disabled value="">Scegli una materia...</option>
               <option value=""><b>Tutte le materie</b></option>
-              <option v-for="subject in store.materie" :key="subject.id" :value="subject.name"
-                :selected="store.Subject === subject.name ? 'selected' : ''">
+              <option
+                v-for="subject in store.materie"
+                :key="subject.id"
+                :value="subject.name"
+                :selected="store.Subject === subject.name ? 'selected' : ''"
+              >
                 {{ subject.name }}
               </option>
             </select>
           </div>
 
-          <div class="col-12 col-md-4 d-flex flex-column d-md-block align-items-center mt-3 mt-md-0">
+          <div
+            class="col-12 col-md-4 d-flex flex-column d-md-block align-items-center mt-3 mt-md-0"
+          >
             <span class="md-font">MEDIA VALUTAZIONI</span>
-            <select v-model="store.Rating" class="form-select w-75" id="selected-Rating">
+            <select
+              v-model="store.Rating"
+              class="form-select w-75"
+              id="selected-Rating"
+            >
               <option disabled value="">Filtra per voto</option>
-              <option v-for="rating in store.valutazioni" :key="rating.id" :value="rating.id">
+              <option
+                v-for="rating in store.valutazioni"
+                :key="rating.id"
+                :value="rating.id"
+              >
                 {{ rating.name }} in su
               </option>
             </select>
           </div>
 
-          <div class="col-12 col-md-4 d-flex flex-column d-md-block align-items-center mt-3 mt-md-0">
+          <div
+            class="col-12 col-md-4 d-flex flex-column d-md-block align-items-center mt-3 mt-md-0"
+          >
             <span class="md-font">N° MIN. RECENSIONI</span>
-            <select v-model="store.Review" class="form-select w-75" id="selected-Review">
+            <select
+              v-model="store.Review"
+              class="form-select w-75"
+              id="selected-Review"
+            >
               <option disabled value="">Filtra per numero di recensioni</option>
               <option value="0">Qualsiasi</option>
               <option value="5">Minimo 5 recensioni</option>
@@ -230,42 +257,68 @@ export default {
         </div>
 
         <div class="w-100 d-flex justify-content-center">
-          <button type="submit" form="nameform" value="Submit" style="padding: 10px 70px" class="btn h-50 btn-info"
-            @click="population()">
+          <button
+            type="submit"
+            form="nameform"
+            value="Submit"
+            style="padding: 10px 70px"
+            class="btn h-50 btn-info"
+            @click="population()"
+          >
             <i class="fas fa-search" style="color: white"></i>
           </button>
         </div>
-
       </form>
-
     </div>
-
 
     <div v-if="loading">
       <h3>CARICAMENTO...</h3>
     </div>
     <div v-else-if="teachers.length > 0">
       <div class="row mt-4">
-        <div class="col-12 col-md-6 col-xl-3 p-2" v-for="teacher in teachers" :key="teacher.id">
-          <RouterLink :to="{ name: 'show', params: { id: teacher.user.name } }" @click="riempiVet(teacher.id)"
-            class="text-decoration-none">
+        <div
+          class="col-12 col-md-6 col-xl-3 p-2"
+          v-for="teacher in teachers"
+          :key="teacher.id"
+        >
+          <RouterLink
+            :to="{ name: 'show', params: { id: teacher.user.name } }"
+            @click="riempiVet(teacher.id)"
+            class="text-decoration-none"
+          >
             <div class="card pt-3 border-0 shadow">
-              <div class="d-flex justify-content-center align-items-center img_circle mx-auto">
-                <img class="w-100 h-100 rounded-circle" :src="getImageUrl(teacher)" alt="" />
+              <div
+                class="d-flex justify-content-center align-items-center img_circle mx-auto"
+              >
+                <img
+                  class="w-100 h-100 rounded-circle"
+                  :src="getImageUrl(teacher)"
+                  alt=""
+                />
               </div>
               <div class="card-body">
-                <div v-if="teacher.sponsorships.length > 0" class="position-absolute star_sponsor">
+                <div
+                  v-if="teacher.sponsorships.length > 0"
+                  class="position-absolute star_sponsor"
+                >
                   <i class="fa-solid fa-star"></i>
                 </div>
 
-                <h4 style="font-weight: bold;">{{ teacher.user.name }} {{ teacher.user.lastname }}</h4>
+                <h4 style="font-weight: bold">
+                  {{ teacher.user.name }} {{ teacher.user.lastname }}
+                </h4>
                 <div class="med_rec">
                   <div>
                     <i class="fas fa-star" style="color: #ffd43b"></i>
-                    <span class="ps-2" style="color: #ffd43b; font-weight: bold;">{{ media(teacher.average_rating)
-                      }}</span>
+                    <span
+                      class="ps-2"
+                      style="color: #ffd43b; font-weight: bold"
+                      >{{ media(teacher.average_rating) }}</span
+                    >
                   </div>
-                  <span style="font-weight: bold; font-size: 15px;">N° RECENSIONI: {{ teacher.reviews.length }}</span>
+                  <span style="font-weight: bold; font-size: 15px"
+                    >N° RECENSIONI: {{ teacher.reviews.length }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -277,26 +330,43 @@ export default {
       <h3 class="my-4">NESSUN RISULTATO TROVATO!</h3>
     </div>
     <div class="pagination mt-4 mb-4">
-      <button ref="prevButton" :disabled="currentPage === 1" @click="prevPage" @mousedown.prevent="disableButtonEvents"
-        @mouseup="enableButtonEvents" @touchstart.prevent="disableButtonEvents" @touchend="enableButtonEvents"
-        class="btn pagination-btn border-dark">
+      <button
+        ref="prevButton"
+        :disabled="currentPage === 1"
+        @click="prevPage"
+        @mousedown.prevent="disableButtonEvents"
+        @mouseup="enableButtonEvents"
+        @touchstart.prevent="disableButtonEvents"
+        @touchend="enableButtonEvents"
+        class="btn pagination-btn border-dark"
+      >
         <div class="d-flex justify-content-center align-items-center">
           <i class="fa-solid fa-circle-left" style="font-size: 20px"></i>
         </div>
-
       </button>
-      <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
-        :disabled="currentPage === page || disableButtons" class="btn pagination-btn border-dark"
-        :class="page == currentPage ? 'selected-text' : ''">
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        @click="goToPage(page)"
+        :disabled="currentPage === page || disableButtons"
+        class="btn pagination-btn border-dark"
+        :class="page == currentPage ? 'selected-text' : ''"
+      >
         {{ page }}
       </button>
-      <button ref="nextButton" :disabled="currentPage === totalPages || disableButtons" @click="nextPage"
-        @mousedown.prevent="disableButtonEvents" @mouseup="enableButtonEvents" @touchstart.prevent="disableButtonEvents"
-        @touchend="enableButtonEvents" class="btn pagination-btn border-dark">
+      <button
+        ref="nextButton"
+        :disabled="currentPage === totalPages || disableButtons"
+        @click="nextPage"
+        @mousedown.prevent="disableButtonEvents"
+        @mouseup="enableButtonEvents"
+        @touchstart.prevent="disableButtonEvents"
+        @touchend="enableButtonEvents"
+        class="btn pagination-btn border-dark"
+      >
         <div class="d-flex justify-content-center align-items-center">
           <i class="fa-solid fa-circle-right" style="font-size: 20px"></i>
         </div>
-
       </button>
     </div>
   </div>
