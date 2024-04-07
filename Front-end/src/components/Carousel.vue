@@ -42,6 +42,60 @@ export default {
       clearInterval(this.timer);
       this.timer = null;
     },
+
+    // Formatto la lunghezza della recensione a 200 carratteri
+    formatDescription(description) {
+      //creo la variabile per settare la formattazione in pagina del testo della recensione
+      let maxLength = 0;
+
+      let larghezzaFinestra = window.innerWidth;
+
+      //gestisco con uno switch le varie grandezze dello schermo
+      switch (true) {
+        case larghezzaFinestra < 500:
+          maxLength = 25;
+          break;
+        case larghezzaFinestra >= 500 && larghezzaFinestra < 600:
+          maxLength = 30;
+          break;
+        case larghezzaFinestra >= 600 && larghezzaFinestra <= 767:
+          maxLength = 45;
+          break;
+        case larghezzaFinestra >= 768 && larghezzaFinestra <= 1000:
+          maxLength = 30;
+          break;
+        case larghezzaFinestra >= 1001 && larghezzaFinestra <= 1200:
+          maxLength = 45;
+          break;
+        case larghezzaFinestra >= 1201 && larghezzaFinestra <= 1500:
+          maxLength = 60;
+          break;
+        case larghezzaFinestra >= 1501 && larghezzaFinestra <= 1700:
+          maxLength = 85;
+          break;
+        case larghezzaFinestra >= 1701:
+          maxLength = 100;
+          break;
+      }
+
+      console.log(maxLength);
+
+      // se la recensione è più lunga di un tot
+      if (description.length > maxLength) {
+        let formattedDescription = "";
+        for (let i = 0; i < description.length; i++) {
+          //controllo che la posizione dell'ennesimo carattere sia la designata per mandare a capo il testo o un suo multiplo
+          if (i > 0 && i % maxLength === 0) {
+            //forzo ad andare a capo inserendo il carattere "\n" in quella posizione
+            formattedDescription += "\n";
+          }
+          formattedDescription += description[i];
+        }
+        return formattedDescription;
+      } else {
+        return description;
+      }
+    },
   },
   mounted() {
     this.intervalImg();
@@ -63,10 +117,14 @@ export default {
           @mouseover="stopAutoPlay"
           @mouseout="intervalImg"
         >
-          <!-- L'immagine si bloccherà quando il mouse passa sopra -->
+          <!-- La card si bloccherà quando il mouse passa sopra -->
 
           <h5 class="card-title mb-0">{{ review.title }}</h5>
-          <p class="card-text">{{ review.description }}</p>
+
+          <!-- mi assicuro che la descrizione entri in pagina correttamente -->
+
+          <p class="card-text">{{ formatDescription(review.description) }}</p>
+
           <p class="card-text">{{ review.date_of_review }}</p>
         </div>
       </div>
@@ -98,6 +156,11 @@ export default {
       padding-top: 30px;
       color: #7799ad;
       font-size: 20px;
+    }
+
+    .card-text {
+      max-width: 100%; /* Imposta la larghezza massima al 100% della larghezza del contenitore */
+      word-wrap: break-word; /* Assicura che le parole lunghe si spezzino quando superano la larghezza massima */
     }
   }
   .arrows {
