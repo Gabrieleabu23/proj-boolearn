@@ -1,0 +1,103 @@
+.contact-form {
+    width: 100%;
+}
+
+.contact-form .form-control {
+    border-radius: 1rem;
+}
+
+.contact-image {
+    text-align: center;
+}
+
+.contact-image img {
+    border-radius: 6rem;
+    width: 100px;
+    margin-top: 10%;
+    transform: rotate(29deg);
+}
+
+.contact-form form {
+    padding: 10%;
+}
+
+.contact-form form .row {
+    margin-bottom: -7%;
+}
+
+.contact-form h1 {
+    margin-bottom: 8%;
+    text-align: center;
+    background-image: linear-gradient(45deg, #553c9a, #ee4b2b);
+    font-size: 40px;
+    font-weight: 500;
+    color: #553c9a;
+    border-right: 4px solid #000;
+    animation: cursor 1s infinite step-end, typing 11s infinite steps(16);
+    white-space: nowrap;
+    overflow: hidden;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+@keyframes cursor {
+
+    0%,
+    100% {
+        border-color: transparent;
+    }
+
+    50% {
+        border-color: #000;
+    }
+}
+
+@keyframes typing {
+    0% {
+        width: 0ch
+    }
+
+    /*Text is hidden*/
+    30% {
+        width: 16ch;
+    }
+
+    /*The enitre header will be typed out*/
+    80% {
+        width: 16ch;
+    }
+
+    /*Text stays visible*/
+    90% {
+        width: 0ch;
+    }
+
+    /*Text is deleted*/
+    100% {
+        width: 0ch;
+    }
+
+    /*Text stays hidden*/
+}
+
+.contact-form .btnContact {
+    width: 250px;
+    border: none;
+    border-radius: 1rem;
+    padding: 1.5%;
+    background: #dc3545;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btnContactSubmit {
+    width: 50%;
+    border-radius: 1rem;
+    padding: 1.5%;
+    color: #fff;
+    background-color: #0062cc;
+    border: none;
+    cursor: pointer;
+}
