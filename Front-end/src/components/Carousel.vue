@@ -119,7 +119,7 @@ export default {
         >
           <!-- La card si bloccherà quando il mouse passa sopra -->
 
-          <h5 class="card-title mb-0">{{ review.title }}</h5>
+          <h5 class="card-title">{{ review.title }}</h5>
 
           <!-- mi assicuro che la descrizione entri in pagina correttamente -->
 
@@ -141,10 +141,6 @@ export default {
 @use "../styles/partials/variables" as *;
 .carosello {
   .slider-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    background-size: cover;
-    padding: 50px 0;
     img {
       max-width: 150px;
       height: auto;
