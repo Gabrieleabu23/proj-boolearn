@@ -209,6 +209,7 @@ class ApiController extends Controller
         $subject = $request->input('subject');
         $rating_id = $request->input('rating');
         $min_number_review = $request->input('review');
+        
         if ($subject == 'Tutte') {
             $subject_id = 0;
         } else {

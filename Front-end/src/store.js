@@ -19,7 +19,7 @@ export const store = reactive({
   EmailMessage: "",
   ReviewTitle: "",
 
-  // Pagina Home.vue
+  // Pagina Home.vue/Filtered_res.vue
   Subject: "",
   Rating: "",
   Review: "",

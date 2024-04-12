@@ -10,11 +10,9 @@ export default {
   data() {
     return {
       store,
-      throttling: false,
       teachers: [],
       currentPage: 1,
       totalPages: "",
-      pageLinks: [],
       loading: true,
       clickCount: 0,
       disableButtons: false,
@@ -29,12 +27,13 @@ export default {
 
     population() {
       console.log(store.materie);
+
       const dataToSend = {
         subject: store.Subject,
         rating: store.Rating,
         review: store.Review,
       };
-
+      console.log(dataToSend);
       axios
         .post(
           `http://127.0.0.1:8000/api/v1/filtered?page=${this.currentPage}`,
@@ -87,54 +86,41 @@ export default {
         }
       });
     },
+
     nextPage() {
-      if (
-        !this.throttling &&
-        !this.disableButtons &&
-        this.currentPage < this.totalPages
-      ) {
-        this.currentPage++;
-        this.clickCount++;
-        if (this.currentPage === 1) {
-          this.clickCount = 0;
-          this.disableButtons = false;
-        }
-        if (this.clickCount >= 5) {
-          this.disableButtons = true;
-          setTimeout(() => {
-            this.disableButtons = false;
-            this.clickCount = 0;
-          }, 2000);
-        }
-        this.population();
+      this.currentPage++;
+      this.clickCount++;
+      if (this.currentPage === 1) {
+        this.clickCount = 0;
+        this.disableButtons = false;
       }
+
+      // Se mi trovo all'ultima pagina e vado avanti, ricomincio il giro
+      if (this.currentPage > this.totalPages) {
+        this.currentPage = 1;
+      }
+
+      this.population();
     },
 
     prevPage() {
-      if (!this.throttling && !this.disableButtons && this.currentPage > 1) {
-        this.currentPage--;
-        this.clickCount++;
-        if (this.currentPage === this.totalPages) {
-          this.clickCount = 0;
-          this.disableButtons = false;
-        }
-        if (this.clickCount >= 5) {
-          this.disableButtons = true;
-          setTimeout(() => {
-            this.disableButtons = false;
-            this.clickCount = 0;
-          }, 1000);
-        }
-        this.population();
+      this.currentPage--;
+      this.clickCount++;
+      if (this.currentPage === this.totalPages) {
+        this.clickCount = 0;
+        this.disableButtons = false;
       }
+
+      // Se mi trovo alla prima pagina e torno indietro, ricomincio il giro
+      if (this.currentPage === 0) {
+        this.currentPage = this.totalPages;
+      }
+
+      this.population();
     },
 
     goToPage(pageNumber) {
-      if (
-        !this.throttling &&
-        !this.disableButtons &&
-        pageNumber !== this.currentPage
-      ) {
+      if (pageNumber !== this.currentPage) {
         this.currentPage = pageNumber;
         this.clickCount++;
         if (this.clickCount >= 5) {
@@ -145,11 +131,7 @@ export default {
           }, 1000);
         }
         this.population();
-      } else if (
-        !this.throttling &&
-        !this.disableButtons &&
-        pageNumber === this.currentPage
-      ) {
+      } else if (pageNumber === this.currentPage) {
         this.clickCount = 0;
       }
     },
@@ -163,16 +145,11 @@ export default {
         }, 1000); // Imposta il timeout a 1000 millisecondi (1 secondo)
       }
     },
-    disableButtonEvents() {
-      this.buttonEventsDisabled = true;
-    },
-    enableButtonEvents() {
-      this.buttonEventsDisabled = false;
-    },
   },
 
   mounted() {
-    this.store.valutazioni = JSON.parse(localStorage.getItem("valutazioni"));
+    // store.valutazioni = JSON.parse(localStorage.getItem("valutazioni"));
+    // store.materie = JSON.parse(localStorage.getItem("materie"));
     this.store.Subject = localStorage.getItem("materiaID");
     this.population();
   },
@@ -206,12 +183,11 @@ export default {
               id="selected-Subject"
             >
               <option disabled value="">Scegli una materia...</option>
-              <option value=""><b>Tutte le materie</b></option>
+              <option value="Tutte"><b>Tutte le materie</b></option>
               <option
                 v-for="subject in store.materie"
                 :key="subject.id"
                 :value="subject.name"
-                :selected="store.Subject === subject.name ? 'selected' : ''"
               >
                 {{ subject.name }}
               </option>
@@ -329,20 +305,15 @@ export default {
     <div v-else>
       <h3 class="my-4">NESSUN RISULTATO TROVATO!</h3>
     </div>
+
+    <!-- PAGINAZIONE -->
     <div class="pagination mt-4 mb-4">
       <button
-        ref="prevButton"
         :disabled="currentPage === 1"
         @click="prevPage"
-        @mousedown.prevent="disableButtonEvents"
-        @mouseup="enableButtonEvents"
-        @touchstart.prevent="disableButtonEvents"
-        @touchend="enableButtonEvents"
         class="btn pagination-btn border-dark"
       >
-        <div class="d-flex justify-content-center align-items-center">
-          <i class="fa-solid fa-circle-left" style="font-size: 20px"></i>
-        </div>
+        <i class="fa-solid fa-circle-left"></i>
       </button>
       <button
         v-for="page in totalPages"
@@ -355,18 +326,11 @@ export default {
         {{ page }}
       </button>
       <button
-        ref="nextButton"
         :disabled="currentPage === totalPages || disableButtons"
         @click="nextPage"
-        @mousedown.prevent="disableButtonEvents"
-        @mouseup="enableButtonEvents"
-        @touchstart.prevent="disableButtonEvents"
-        @touchend="enableButtonEvents"
         class="btn pagination-btn border-dark"
       >
-        <div class="d-flex justify-content-center align-items-center">
-          <i class="fa-solid fa-circle-right" style="font-size: 20px"></i>
-        </div>
+        <i class="fa-solid fa-circle-right"></i>
       </button>
     </div>
   </div>

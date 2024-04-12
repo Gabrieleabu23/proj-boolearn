@@ -32,10 +32,11 @@ export default {
         .post("http://127.0.0.1:8000/api/v1/result")
         .then((res) => {
           this.teachers = res.data.teachers;
-          this.store.materie = res.data.subjects;
-          this.store.valutazioni = res.data.ratings;
+          store.materie = res.data.subjects;
+          store.valutazioni = res.data.ratings;
           // store.List = res.data.teachers2;;
           console.log(store.materie);
+
           this.loading = false;
         })
         .catch((error) => {
@@ -55,19 +56,23 @@ export default {
       });
     },
 
-    // funzione chiamata quando si clicca su un docente
+    // funzione chiamata quando si clicca sul bottone ricerca
     riempiRec() {
       event.preventDefault();
       if (store.Subject != 0) {
       } else {
         store.Subject = "Tutte";
       }
-      localStorage.setItem("materiaID", store.Subject);
-      localStorage.setItem(
-        "valutazioni",
-        JSON.stringify(this.store.valutazioni)
-      );
 
+      //salvo temporaneamente l'identificatore della materia selezionata dall'utente nell'archivio locale del browser.
+      localStorage.setItem("materiaID", store.Subject);
+
+      //salvo temporaneamente l'array valutzioni disponibili per l'utente nell'archivio locale del browser.
+      localStorage.setItem("valutazioni", JSON.stringify(store.valutazioni));
+      //salvo temporaneamente l'array materie disponibili per l'utente nell'archivio locale del browser.
+      localStorage.setItem("materie", JSON.stringify(store.materie));
+
+      // Riindirizzo alla pagina filt_res
       this.$router.push({
         name: "filt",
       });
