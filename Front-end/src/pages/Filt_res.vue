@@ -148,8 +148,8 @@ export default {
   },
 
   mounted() {
-    // store.valutazioni = JSON.parse(localStorage.getItem("valutazioni"));
-    // store.materie = JSON.parse(localStorage.getItem("materie"));
+    store.valutazioni = JSON.parse(localStorage.getItem("valutazioni"));
+    store.materie = JSON.parse(localStorage.getItem("materie"));
     this.store.Subject = localStorage.getItem("materiaID");
     this.population();
   },
